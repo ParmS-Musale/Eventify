@@ -16,9 +16,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request
 // Routes
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
+const eventRoutes = require("./routes/event");
 
 app.use("/", authRoutes);
 app.use("/", profileRoutes);
+app.use("/", eventRoutes);
 
 // Database connection
 connectDB()

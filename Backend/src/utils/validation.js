@@ -1,7 +1,6 @@
 const validator = require("validator");
 
 // Validation For Signup Data
-
 const validateSignupData = (req) => {
   const { firstName, lastName, emailId, password } = req.body;
 
@@ -19,6 +18,7 @@ const validateSignupData = (req) => {
   return { success: true };
 };
 
+// Validate Profile Data
 const vaildateEditProfileData = (req) => {
   const allowedEditFields = [
     "firstName",
@@ -34,4 +34,19 @@ const vaildateEditProfileData = (req) => {
   return isEditAllowed; // true or false
 };
 
-module.exports = { validateSignupData , vaildateEditProfileData};
+// Validation function for event data
+const validateEventData = (req) => {
+  const { name, description, date, location, capacity } = req.body;
+
+  if (!name || !description || !date || !location || !capacity) {
+    return "All fields are required";
+  }
+
+  if (typeof capacity !== "number" || capacity <= 0) {
+    return "Capacity should be a positive number";
+  }
+
+  return true; // Return true if validation passes
+};
+
+module.exports = { validateSignupData, vaildateEditProfileData , validateEventData};
