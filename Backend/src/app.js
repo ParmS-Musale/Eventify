@@ -4,17 +4,21 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 
 // Middleware
 app.use(cors()); // Enable CORS
+app.use(cookieParser()); // Parse cookies
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request bodies
 
 // Routes
 const authRoutes = require("./routes/auth");
+const profileRoutes = require("./routes/profile");
 
 app.use("/", authRoutes);
+app.use("/", profileRoutes);
 
 // Database connection
 connectDB()

@@ -19,4 +19,19 @@ const validateSignupData = (req) => {
   return { success: true };
 };
 
-module.exports = { validateSignupData };
+const vaildateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "emailId",
+    "password",
+    "photoUrl",
+  ];
+
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    allowedEditFields.includes(field)
+  );
+  return isEditAllowed; // true or false
+};
+
+module.exports = { validateSignupData , vaildateEditProfileData};

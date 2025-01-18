@@ -28,7 +28,7 @@ authRouter.post("/signup", async (req, res) => {
     const savedUser = await user.save();
 
     // Generate JWT Token
-    const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' }); // using jwt.sign
+    const token = jwt.sign({ _id: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' }); // using jwt.sign
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 86400000), // Set expiration time for cookie
@@ -54,7 +54,7 @@ authRouter.post("/login", async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
       // Generate JWT Token
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000), // 8 hours cookie expiration
