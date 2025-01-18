@@ -31,6 +31,7 @@ eventRouter.post("/events/create", userAuth, async (req, res) => {
       date,
       location,
       capacity,
+      createdBy: req.user._id,
     });
 
     // Save event to database
@@ -92,6 +93,88 @@ eventRouter.post("/events/register/:eventId", userAuth, async (req, res) => {
     res.json({ message: "Successfully registered for the event", event });
   } catch (error) {
     res.status(500).json({ error: "Failed to register for event" });
+  }
+});
+
+// View Events Created by the User
+eventRouter.get("/events/my-events", userAuth, async (req, res) => {
+  try {
+    const events = await Event.find({ createdBy: req.user._id });
+    res.status(200).json({ events });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error: " + error.message });
+  }
+});
+
+// Edit an Event
+eventRouter.patch("/events/:id", userAuth, async (req, res) => {
+  try {
+    console.log("inside pathhch route");
+    console.log(req.user);
+    console.log(req.params);
+
+    const event = await Event.findById(req.params.id).populate("createdBy");
+    console.log("Event Created By:", event);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    //   console.log("Fetched Event:", event);
+
+    if (
+      !event.registeredUsers ||
+      event.registeredUsers.toString() !== req.user._id.toString()
+    ) {
+      console.log("Event Created By:", event.registeredUsers);
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this event" });
+    }
+
+    const { name, description, date, location, capacity, photoUrl } = req.body;
+    if (name) event.name = name;
+    if (description) event.description = description;
+    if (date) event.date = date;
+    if (location) event.location = location;
+    if (capacity) event.capacity = capacity;
+    if (photoUrl) event.photoUrl = photoUrl;
+    event.createdBy = req.user._id;
+
+    const updatedEvent = await event.save();
+    res.status(200).json({
+      message: "Event updated successfully",
+      data: updatedEvent,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error: " + error.message });
+  }
+});
+
+// Delete an Event
+eventRouter.delete("/events/:id", userAuth, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    // Allow only the creator to delete the event
+    if (
+      !event.registeredUsers ||
+      event.registeredUsers.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this event" });
+    }
+
+    await Event.findByIdAndDelete({ _id: req.params.id });
+    await event.save();
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error: " + error.message });
   }
 });
 
