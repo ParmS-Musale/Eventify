@@ -1,17 +1,18 @@
+
 const express = require("express");
-const userAuth = require("../middlewares/auth");
+const userAuth = require("../middlewares/auth"); // Corrected import
 const Event = require("../models/event");
 const User = require("../models/user");
 const { validateEventData } = require("../utils/validation");
 const eventRouter = express.Router();
 
 // Create Event Route
-eventRouter.post("/events/create", userAuth, async (req, res) => {
+eventRouter.post("/events/create", userAuth,  async (req, res) => {
   try {
-    // You can add further validation for the request body if needed.
-    const validationResult = validateEventData(req); // Assume you validate the event data (e.g., name, date, etc.)
+    // Validate request data
+    const validationResult = validateEventData(req.body); // Example validation function
     if (validationResult !== true) {
-      return res.status(400).send(validationResult); // Return validation error message if invalid
+      return res.status(400).json({ message: validationResult });
     }
 
     const { name, description, date, location, capacity } = req.body;
@@ -24,7 +25,7 @@ eventRouter.post("/events/create", userAuth, async (req, res) => {
         .json({ message: "Event with this name already exists" });
     }
 
-    // Create a new event
+    // Create and save the event
     const event = new Event({
       name,
       description,
@@ -34,7 +35,6 @@ eventRouter.post("/events/create", userAuth, async (req, res) => {
       createdBy: req.user._id,
     });
 
-    // Save event to database
     const savedEvent = await event.save();
 
     res.status(201).json({

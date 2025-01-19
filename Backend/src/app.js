@@ -16,8 +16,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request
 // Routes
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
+
 const eventRoutes = require("./routes/event");
 const adminRoutes = require("./routes/admin");
+
 
 app.use("/", authRoutes);
 app.use("/", profileRoutes);
