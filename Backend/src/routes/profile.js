@@ -3,6 +3,7 @@ const userAuth = require("../middlewares/auth");
 const { vaildateEditProfileData } = require("../utils/validation");
 const profileRouter = express.Router();
 const User = require("../models/user");
+const isAdmin = require("../middlewares/auth");
 
 // Profile view route
 profileRouter.get("/profile/view", userAuth, (req, res) => {
@@ -40,7 +41,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
 // Delete Profile Route
 
-profileRouter.delete("/profile/delete", userAuth, async (req, res) => {
+profileRouter.delete("/profile/delete", userAuth, isAdmin, async (req, res) => {
   try {
     const loggedInUser = req.user;
     console.log(loggedInUser);
