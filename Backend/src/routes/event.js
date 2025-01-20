@@ -1,13 +1,13 @@
-
 const express = require("express");
 const userAuth = require("../middlewares/auth"); // Corrected import
 const Event = require("../models/event");
 const User = require("../models/user");
 const { validateEventData } = require("../utils/validation");
+const isAdmin = require("../middlewares/isAdmin");
 const eventRouter = express.Router();
 
 // Create Event Route
-eventRouter.post("/events/create", userAuth,  async (req, res) => {
+eventRouter.post("/events/create", userAuth, isAdmin, async (req, res) => {
   try {
     // Validate request data
     const validationResult = validateEventData(req.body); // Example validation function
@@ -107,7 +107,7 @@ eventRouter.get("/events/my-events", userAuth, async (req, res) => {
 });
 
 // Edit an Event
-eventRouter.patch("/events/:id", userAuth, async (req, res) => {
+eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
   try {
     console.log("inside pathhch route");
     console.log(req.user);
@@ -152,7 +152,7 @@ eventRouter.patch("/events/:id", userAuth, async (req, res) => {
 });
 
 // Delete an Event
-eventRouter.delete("/events/:id", userAuth, async (req, res) => {
+eventRouter.delete("/events/:id", userAuth, isAdmin, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
 

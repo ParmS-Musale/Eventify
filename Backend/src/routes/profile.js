@@ -5,9 +5,8 @@ const { vaildateEditProfileData } = require("../utils/validation");
 const profileRouter = express.Router();
 const User = require("../models/user");
 
-
 // Profile view route
-profileRouter.get("/profile/view", userAuth,isAdmin, (req, res) => {
+profileRouter.get("/profile/view", userAuth, (req, res) => {
   try {
     const user = req.user;
     res.send(user);
@@ -42,7 +41,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
 // Delete Profile Route
 
-profileRouter.delete("/profile/delete", userAuth,  async (req, res) => {
+profileRouter.delete("/profile/delete", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
     console.log(loggedInUser);
@@ -57,4 +56,4 @@ profileRouter.delete("/profile/delete", userAuth,  async (req, res) => {
   }
 });
 
-module.exports = profileRouter
+module.exports = profileRouter;
