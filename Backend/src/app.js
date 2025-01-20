@@ -20,7 +20,6 @@ const profileRoutes = require("./routes/profile");
 const eventRoutes = require("./routes/event");
 const adminRoutes = require("./routes/admin");
 
-
 app.use("/", authRoutes);
 app.use("/", profileRoutes);
 app.use("/", eventRoutes);

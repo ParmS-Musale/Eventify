@@ -122,15 +122,15 @@ eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
 
     //   console.log("Fetched Event:", event);
 
-    if (
-      !event.registeredUsers ||
-      event.registeredUsers.toString() !== req.user._id.toString()
-    ) {
-      console.log("Event Created By:", event.registeredUsers);
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to edit this event" });
-    }
+    // if (
+    //   !event.registeredUsers ||
+    //   event.registeredUsers.toString() !== req.user._id.toString()
+    // ) {
+    //   console.log("Event Created By:", event.registeredUsers);
+    //   return res
+    //     .status(403)
+    //     .json({ message: "You are not authorized to edit this event" });
+    // }
 
     const { name, description, date, location, capacity, photoUrl } = req.body;
     if (name) event.name = name;
@@ -161,18 +161,18 @@ eventRouter.delete("/events/:id", userAuth, isAdmin, async (req, res) => {
     }
 
     // Allow only the creator to delete the event
-    if (
-      !event.registeredUsers ||
-      event.registeredUsers.toString() !== req.user._id.toString()
-    ) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to edit this event" });
-    }
+    // if (
+    //   !event.registeredUsers ||
+    //   event.registeredUsers.toString() !== req.user._id.toString()
+    // ) {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "You are not authorized to edit this event" });
+    // }
 
     await Event.findByIdAndDelete({ _id: req.params.id });
-    await event.save();
     res.status(200).json({ message: "Event deleted successfully" });
+    await event.save();
   } catch (error) {
     res.status(500).json({ message: "Server Error: " + error.message });
   }

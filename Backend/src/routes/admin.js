@@ -22,7 +22,7 @@ adminRouter.get("/admin/dashboard", userAuth, isAdmin, async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Admin dashboard stats fetched successfully",
+      message: "Admin dashboard status fetched successfully",
       stats: {
         totalUsers,
         totalEvents,

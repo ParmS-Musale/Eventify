@@ -25,13 +25,11 @@ authRouter.post("/signup", async (req, res) => {
 
     // Save the User to the Database
     const savedUser = await user.save();
-    console.log("Saved User:", savedUser);
 
     // Generate JWT Token
     const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     }); // using jwt.sign
-    console.log("Generated JWT:", token);
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 86400000), // Set expiration time for cookie
