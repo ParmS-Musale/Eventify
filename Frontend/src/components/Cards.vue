@@ -35,7 +35,7 @@ const events = ref([]);
 // Refetch events when search query or category changes
 // onMounted(fetchEvents);
 // watch([searchQuery, selectedCategory], fetchEvents);
-</script>
+// </script>
 
 <template>
   <section class="bg-gray-50 py-12">
