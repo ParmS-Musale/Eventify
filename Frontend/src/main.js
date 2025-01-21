@@ -1,4 +1,12 @@
 import { createApp } from "vue";
-import "./style.css"
+import "./assets/style.css";
 import App from "./App.vue";
-createApp(App).mount("#app");
+import router from "./router"; // Import the router
+
+// Import Font Awesome
+import "@fortawesome/fontawesome-free/css/all.css";
+
+const app = createApp(App);
+
+app.use(router); // Use the router in your app
+app.mount("#app");
