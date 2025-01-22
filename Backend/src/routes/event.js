@@ -38,7 +38,7 @@ eventRouter.post("/events/create", userAuth, isAdmin, async (req, res) => {
     const savedEvent = await event.save();
 
     res.status(201).json({
-      message: "Event created successfully",
+      message: "Event created successfully..!!",
       data: savedEvent,
     });
   } catch (error) {
@@ -50,7 +50,18 @@ eventRouter.post("/events/create", userAuth, isAdmin, async (req, res) => {
 // View Available Events
 eventRouter.get("/events", async (req, res) => {
   try {
-    const events = await Event.find(); // Fetch all events
+    const { search, category } = req.query;
+
+    // Create a query object based on filters
+    const query = {};
+    if (search) {
+      query.title = { $regex: search, $options: "i" }; // Case-insensitive search
+    }
+    if (category && category !== "All") {
+      query.category = category;
+    }
+
+    const events = await Event.find(query); // Fetch filtered events
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch events" });

@@ -35,18 +35,22 @@ const vaildateEditProfileData = (req) => {
 };
 
 // Validation function for event data
-const validateEventData = (req) => {
-  const { name, description, date, location, capacity } = req.body;
+const validateEventData = (data) => {
+  const { name, description, date, location, capacity ,category } = data;
 
-  if (!name || !description || !date || !location || !capacity) {
-    return "All fields are required";
+  if (!name || !description || !date || !location || !capacity || !category) {
+    return "All fields are required.";
   }
 
   if (typeof capacity !== "number" || capacity <= 0) {
-    return "Capacity should be a positive number";
+    return "Capacity should be a positive number.";
   }
 
-  return true; // Return true if validation passes
+  return true; // Validation passes
 };
 
-module.exports = { validateSignupData, vaildateEditProfileData , validateEventData};
+module.exports = {
+  validateSignupData,
+  vaildateEditProfileData,
+  validateEventData,
+};

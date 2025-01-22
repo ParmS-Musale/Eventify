@@ -1,5 +1,41 @@
 <script setup>
+import { ref } from "vue";
+import { useToast } from "vue-toastification";
+import axios from "axios";
+import { useRouter } from "vue-router";
+
+const emailId = ref("");
+const password = ref("");
+const toast = useToast();
+const router = useRouter();
+
+const handleLogin = async () => {
+  try {
+    const response = await axios.post("http://localhost:5000/login", {
+      emailId: emailId.value,
+      password: password.value,
+    });
+
+    if (response.status === 200) {
+      // Show success toast
+      toast.success("Logged in successfully!", { timeout: 3000 });
+
+      // Redirect to home page
+      setTimeout(() => {
+        router.push("/");
+      }, 1000); // Add a slight delay to show the toast message
+    }
+  } catch (error) {
+    // Handle errors and show an error toast
+    if (error.response && error.response.status === 400) {
+      toast.error("Invalid credentials. Please try again.");
+    } else {
+      toast.error("Something went wrong. Please try again later.");
+    }
+  }
+};
 </script>
+
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
@@ -24,17 +60,19 @@
       </div>
 
       <!-- Login Form -->
-      <form>
+      <form @submit.prevent="handleLogin">
         <div class="mb-4">
           <input
-            type="text"
+            type="email"
+            v-model="emailId"
             placeholder="Email Id"
             class="border w-full p-2 rounded-lg text-gray-700"
           />
         </div>
         <div class="mb-4">
           <input
-            type="text"
+            type="password"
+            v-model="password"
             placeholder="Password"
             class="border w-full p-2 rounded-lg text-gray-700"
           />
@@ -54,9 +92,5 @@
     </div>
   </div>
 </template>
-  
 
-  
-  <style scoped>
-</style>
-  
+<style scoped></style>

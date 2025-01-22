@@ -36,6 +36,12 @@ const eventSchema = new mongoose.Schema({
     ref: "User",
     default: [],
   },
+  category: {
+    type: String,
+    required: true,
+    enum: ["Tech", "Development", "UI/UX", "AI", "NextJS", "General"],
+    default: "General",
+  }
 });
 
 module.exports = mongoose.model("Event", eventSchema);

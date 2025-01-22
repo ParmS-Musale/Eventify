@@ -1,4 +1,41 @@
 <script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import "vue-toastification/dist/index.css";
+import { useToast } from "vue-toastification";
+
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const password = ref("");
+const toast = useToast();
+const router = useRouter();
+
+const handleSignup = async () => {
+  try {
+    const response = await fetch("http://localhost:5000/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        emailId: email.value,
+        password: password.value,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast.success(data.message); // Show success toast
+      router.push("/login"); // Redirect to login page
+    } else {
+      toast.error(data.message); // Show error toast
+    }
+  } catch (error) {
+    toast.error("An error occurred. Please try again.");
+  }
+};
 </script>
 
 <template>
@@ -25,34 +62,41 @@
       </div>
 
       <!-- Signup Form -->
-      <form>
+      <form @submit.prevent="handleSignup">
         <div class="mb-4">
           <input
+            v-model="firstName"
             type="text"
             placeholder="First name"
             class="border w-full p-2 rounded-lg text-gray-700"
+            required
           />
         </div>
         <div class="mb-4">
-            <input
+          <input
+            v-model="lastName"
             type="text"
             placeholder="Last name"
             class="border w-full p-2 rounded-lg text-gray-700"
+            required
           />
         </div>
-
         <div class="mb-4">
           <input
+            v-model="email"
             type="email"
             placeholder="Email address"
             class="border w-full p-2 rounded-lg text-gray-700"
+            required
           />
         </div>
         <div class="mb-6">
           <input
+            v-model="password"
             type="password"
             placeholder="Password"
             class="border w-full p-2 rounded-lg text-gray-700"
+            required
           />
         </div>
         <button
@@ -65,14 +109,10 @@
 
       <p class="text-center text-gray-600 text-sm mt-4">
         Have an account?
-        <a href="/login" class="text-purple-600 font-bold">Sign in</a>
+        <router-link to="/login" class="text-purple-600 font-bold"
+          >Sign in</router-link
+        >
       </p>
     </div>
   </div>
 </template>
-  
-<style scoped>
-</style>
-
-  
-  
