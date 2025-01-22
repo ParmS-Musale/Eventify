@@ -25,6 +25,11 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  price:{
+    type: Number,
+    required: true,
+    default: 0
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

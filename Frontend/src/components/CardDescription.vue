@@ -1,32 +1,78 @@
 <script setup>
-const event = {
-  title: "JS Galaxy: Exploring the Universe of JavaScript",
-  price: "$299",
-  category: "Development",
-  organizer: "Faizan | JS Mastery",
-  date: "Wed, Dec 20, 2023 / 2:30 PM - 1:00 PM",
-  location: "Houston Space Center, TX",
-  description:
-    "Embark on a cosmic journey through the galaxy of JavaScript at JS Galaxy! This event brings together JavaScript developers and enthusiasts for an out-of-this-world experience. Dive into deep-space discussions on the latest ECMAScript features, cutting-edge frameworks, and futuristic JavaScript technologies.",
-  link: "http://jsgalaxyuniverse.com/",
-  image: "https://via.placeholder.com/400x400", // Replace with your event image URL
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
+
+const route = useRoute();
+const router = useRouter();
+const event = ref({});
+
+const fetchEventDetails = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/events/${route.params.id}`
+    );
+    event.value = response.data;
+  } catch (error) {
+    console.error("Error fetching event details:", error);
+  }
 };
+
+// Redirect to Update Event Page
+const redirectToUpdatePage = () => {
+  router.push(`/event-update/${route.params.id}`);
+};
+
+// Delete Event
+const deleteEvent = async () => {
+  const confirmDelete = confirm(
+    "Are you sure you want to delete this event? This action cannot be undone."
+  );
+  if (!confirmDelete) return;
+
+  try {
+    await axios.delete(`http://localhost:5000/events/${route.params.id}`);
+    alert("Event deleted successfully!");
+    router.push("/events"); // Redirect to the events list page
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    alert("Failed to delete the event. Please try again.");
+  }
+};
+
+onMounted(fetchEventDetails);
 </script>
 
 <template>
   <div class="bg-gray-100 min-h-screen overflow-x-hidden">
-    <!-- Event Card -->
-    <div class="container mx-auto px-4 py-8 max-w-screen-lg">
+    <!-- Conditional Rendering -->
+    <div v-if="event" class="container mx-auto px-4 py-8 max-w-screen-lg">
       <div
         class="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden"
       >
         <!-- Image Section -->
-        <div class="md:w-1/3">
+        <div class="md:w-1/3 relative">
           <img
-            :src="event.image"
+            :src="event.photoUrl || 'https://via.placeholder.com/400x400'"
             alt="Event Image"
             class="object-cover w-full h-full"
           />
+
+          <!-- Edit and Delete Icons -->
+          <div class="absolute top-2 right-2 bg-slate-50 flex flex-col  space-y-2">
+            <button
+              class=" text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
+              @click="redirectToUpdatePage"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              class=" text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
+              @click="deleteEvent"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Content Section -->
@@ -37,14 +83,16 @@ const event = {
 
           <div class="flex items-center space-x-4 mb-4">
             <span class="text-lg font-semibold text-green-600">
-              {{ event.price }}
+              {{ event.price === 0 ? "FREE" : `$${event.price}` }}
             </span>
             <span
               class="px-3 py-1 bg-gray-200 text-sm text-gray-700 rounded-full"
             >
               {{ event.category }}
             </span>
-            <span class="text-sm text-gray-500">by {{ event.organizer }}</span>
+            <span class="text-sm text-gray-500">
+              by {{ event.organizer || "ParmS-Musale" }}
+            </span>
           </div>
 
           <div class="flex items-center space-x-4 text-gray-700 text-sm mb-4">
@@ -61,7 +109,7 @@ const event = {
           <p class="text-gray-600 mb-4">{{ event.description }}</p>
 
           <a
-            :href="event.link"
+            :href="event.link || '#'"
             target="_blank"
             class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
           >
@@ -72,5 +120,4 @@ const event = {
     </div>
   </div>
 </template>
-
 

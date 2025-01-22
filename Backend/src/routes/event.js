@@ -68,6 +68,20 @@ eventRouter.get("/events", async (req, res) => {
   }
 });
 
+// View Event Details
+eventRouter.get("/events/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch event" });
+  }
+});
+
 // Register for an Event
 eventRouter.post("/events/register/:eventId", userAuth, async (req, res) => {
   try {
@@ -131,25 +145,15 @@ eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    //   console.log("Fetched Event:", event);
-
-    // if (
-    //   !event.registeredUsers ||
-    //   event.registeredUsers.toString() !== req.user._id.toString()
-    // ) {
-    //   console.log("Event Created By:", event.registeredUsers);
-    //   return res
-    //     .status(403)
-    //     .json({ message: "You are not authorized to edit this event" });
-    // }
-
-    const { name, description, date, location, capacity, photoUrl } = req.body;
+    const { name, description, date, location, capacity, photoUrl, category } =
+      req.body;
     if (name) event.name = name;
     if (description) event.description = description;
     if (date) event.date = date;
     if (location) event.location = location;
     if (capacity) event.capacity = capacity;
     if (photoUrl) event.photoUrl = photoUrl;
+    if (category) event.category = category;
     event.createdBy = req.user._id;
 
     const updatedEvent = await event.save();

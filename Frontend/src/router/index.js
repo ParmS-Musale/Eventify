@@ -4,11 +4,9 @@ import SignUp from '@/components/SignUp.vue';
 import Login from '@/components/Login.vue';
 import CreateEvent from '@/components/CreateEvent.vue';
 import CardDescription from '../components/CardDescription.vue';
-// import JobsView from '@/views/JobsView.vue';
-// import NotFoundView from '@/views/NotFoundView.vue';
-// import JobView from '@/views/JobView.vue';
-// import AddJobView from '@/views/AddJobView.vue';
-// import EditJobView from '@/views/EditJobView.vue';
+import CardEdit from '../components/CardEdit.vue';
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,15 +32,15 @@ const router = createRouter({
       component: CreateEvent,
     },
     {
-      path: '/card-description',
-      name: 'edit-job',
+      path: '/card-description/:id',
+      name: 'CardDescription',
       component: CardDescription,
     },
-    // {
-    //   path: '/:catchAll(.*)',
-    //   name: 'not-found',
-    //   component: NotFoundView,
-    // },
+    {
+      path: '/card-edit',
+      name: 'not-found',
+      component: CardEdit,
+    },
   ],
 });
 
