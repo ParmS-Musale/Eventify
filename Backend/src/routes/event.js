@@ -134,19 +134,22 @@ eventRouter.get("/events/my-events", userAuth, async (req, res) => {
 // Edit an Event
 eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
   try {
-    console.log("inside pathhch route");
-    console.log(req.user);
-    console.log(req.params);
-
     const event = await Event.findById(req.params.id).populate("createdBy");
-    console.log("Event Created By:", event);
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    const { name, description, date, location, capacity, photoUrl, category } =
-      req.body;
+    const {
+      name,
+      description,
+      date,
+      location,
+      capacity,
+      photoUrl,
+      category,
+      price,
+    } = req.body;
     if (name) event.name = name;
     if (description) event.description = description;
     if (date) event.date = date;
@@ -154,6 +157,7 @@ eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
     if (capacity) event.capacity = capacity;
     if (photoUrl) event.photoUrl = photoUrl;
     if (category) event.category = category;
+    if (price) event.price = price;
     event.createdBy = req.user._id;
 
     const updatedEvent = await event.save();
@@ -167,7 +171,7 @@ eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
 });
 
 // Delete an Event
-eventRouter.delete("/events/:id", userAuth, isAdmin, async (req, res) => {
+eventRouter.delete("/events/:id", userAuth, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
 

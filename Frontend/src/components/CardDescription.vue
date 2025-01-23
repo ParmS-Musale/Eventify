@@ -2,10 +2,12 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import { useToast } from "vue-toastification"; // Import the toast
 
 const route = useRoute();
 const router = useRouter();
 const event = ref({});
+const toast = useToast(); // Initialize toast
 
 const fetchEventDetails = async () => {
   try {
@@ -15,6 +17,7 @@ const fetchEventDetails = async () => {
     event.value = response.data;
   } catch (error) {
     console.error("Error fetching event details:", error);
+    toast.error("Failed to fetch event details.");
   }
 };
 
@@ -25,23 +28,25 @@ const redirectToUpdatePage = () => {
 
 // Delete Event
 const deleteEvent = async () => {
-  const confirmDelete = confirm(
-    "Are you sure you want to delete this event? This action cannot be undone."
-  );
+  const confirmDelete = confirm("Are you sure you want to delete this event?");
   if (!confirmDelete) return;
 
   try {
     await axios.delete(`http://localhost:5000/events/${route.params.id}`);
-    alert("Event deleted successfully!");
+    toast.success("Event deleted successfully!"); // Show success toast
     router.push("/events"); // Redirect to the events list page
   } catch (error) {
-    console.error("Error deleting event:", error);
-    alert("Failed to delete the event. Please try again.");
+    console.error("Error deleting event:", error.response || error);
+    toast.error(
+      error.response?.data?.message ||
+        "Failed to delete the event. Please try again."
+    ); // Show error toast
   }
 };
 
 onMounted(fetchEventDetails);
 </script>
+
 
 <template>
   <div class="bg-gray-100 min-h-screen overflow-x-hidden">
@@ -59,15 +64,17 @@ onMounted(fetchEventDetails);
           />
 
           <!-- Edit and Delete Icons -->
-          <div class="absolute top-2 right-2 bg-slate-50 flex flex-col  space-y-2">
+          <div
+            class="absolute top-2 right-2 bg-slate-50 flex flex-col space-y-2"
+          >
             <button
-              class=" text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
+              class="text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
               @click="redirectToUpdatePage"
             >
               <i class="fas fa-edit"></i>
             </button>
             <button
-              class=" text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
+              class="text-black p-2 rounded-full hover:bg-gray-300 shadow-md"
               @click="deleteEvent"
             >
               <i class="fas fa-trash"></i>

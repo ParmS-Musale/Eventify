@@ -1,20 +1,58 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
+import { useToast } from "vue-toastification"; // Import toast
+
+const toast = useToast(); // Initialize toast
 
 const event = ref({
-  title: "React Day Berlin",
-  description:
-    "React Day Berlin is your gateway to new opportunities and exciting collaboration on stellar tech. Attend in-depth talks, supercharge your hard and soft skills with career-boosting workshops, and connect with React enthusiasts.",
-  category: "Tech",
-  location: "Berlin",
-  startDate: "12/15/2023 12:30 PM",
-  endDate: "12/16/2023 7:00 PM",
-  price: 999,
+  title: "",
+  description: "",
+  category: "",
+  location: "",
+  startDate: "",
+  endDate: "",
+  price: 0,
   isFree: false,
-  link: "https://reactday.berlin",
-  image: "https://via.placeholder.com/400x200",
+  photoUrl: "",
 });
+
+const route = useRoute();
+const router = useRouter();
+const eventId = route.params.id; // Assume event ID is passed as a route param
+
+// Fetch event details on component mount
+const fetchEvent = async () => {
+  try {
+    const response = await axios.get(`http://localhost:5000/events/${eventId}`);
+    event.value = response.data; // Populate event data
+  } catch (error) {
+    console.error("Failed to fetch event:", error);
+    toast.error("Failed to fetch event details."); // Show error toast
+  }
+};
+
+// Update event details
+const updateEvent = async () => {
+  try {
+    await axios.patch(`http://localhost:5000/events/${eventId}`, event.value, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    toast.success("Event updated successfully!"); // Show success toast
+    router.push("/"); // Redirect to events list
+  } catch (error) {
+    console.error("Failed to update event:", error);
+    toast.error("Failed to update event details."); // Show error toast
+  }
+};
+
+// Fetch event details when the component is mounted
+onMounted(fetchEvent);
 </script>
+
 
 <template>
   <div class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
@@ -27,22 +65,22 @@ const event = ref({
         <div class="md:col-span-2 space-y-4">
           <input
             type="text"
+            v-model="event.name"
             class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
             placeholder="Event Title"
-            :value="event.title"
           />
           <input
             type="text"
+            v-model="event.category"
             class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
             placeholder="Category"
-            :value="event.category"
           />
         </div>
 
         <!-- Image -->
         <div class="relative">
           <img
-            :src="event.image"
+            :src="event.photoUrl || 'https://via.placeholder.com/400x400'"
             alt="Event Image"
             class="object-cover rounded-lg w-full h-full"
           />
@@ -51,61 +89,53 @@ const event = ref({
 
       <!-- Description -->
       <textarea
+        v-model="event.description"
         class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500 mt-4"
         rows="5"
         placeholder="Event Description"
-        >{ event.description }</textarea
-      >
+      ></textarea>
 
       <!-- Location, Date & Price -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <input
           type="text"
+          v-model="event.location"
           class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
           placeholder="Location"
-          :value="event.location"
         />
         <input
           type="text"
+          v-model="event.startDate"
           class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
           placeholder="Start Date"
-          :value="event.startDate"
         />
         <input
           type="text"
+          v-model="event.endDate"
           class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
           placeholder="End Date"
-          :value="event.endDate"
         />
         <div class="flex items-center space-x-2">
           <input
             type="number"
+            v-model="event.price"
             class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500"
             placeholder="Price"
-            :value="event.price"
           />
           <label class="flex items-center space-x-2">
-            <input type="checkbox" :checked="event.isFree" />
+            <input type="checkbox" v-model="event.isFree" />
             <span class="text-gray-700">Free Ticket</span>
           </label>
         </div>
       </div>
 
-      <!-- Link -->
-      <input
-        type="text"
-        class="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:ring focus:ring-purple-500 mt-4"
-        placeholder="Event Link"
-        :value="event.link"
-      />
-
-      <!-- Create Event Button -->
+      <!-- Update Event Button -->
       <button
         class="mt-6 w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+        @click="updateEvent"
       >
-        Create Event
+        Update Event
       </button>
     </div>
   </div>
 </template>
-

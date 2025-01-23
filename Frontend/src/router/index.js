@@ -37,8 +37,8 @@ const router = createRouter({
       component: CardDescription,
     },
     {
-      path: '/card-edit',
-      name: 'not-found',
+      path: '/event-update/:id',
+      name: 'EditEvent',
       component: CardEdit,
     },
   ],
