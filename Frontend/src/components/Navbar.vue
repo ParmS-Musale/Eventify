@@ -34,14 +34,14 @@ const isActiveLink = (path) => route.path === path;
             Home
           </RouterLink>
           <RouterLink
-            to="/my-events"
+            to="/events"
             class="text-gray-800 hover:text-purple-600 font-medium"
             :class="{ 'text-purple-600': isActiveLink('/my-events') }"
           >
-            My Events
+            Events
           </RouterLink>
           <RouterLink
-            to="/my-profile"
+            to="/profile-view"
             class="text-gray-800 hover:text-purple-600 font-medium"
             :class="{ 'text-purple-600': isActiveLink('/my-profile') }"
           >
