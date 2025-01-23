@@ -15,7 +15,9 @@ const profile = ref({
 
 const fetchProfile = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/profile/view");
+    const response = await axios.get("http://localhost:5000/profile/view",{
+      withCredentials: true,
+    });
     profile.value = response.data;
   } catch (error) {
     console.error("Error fetching profile:", error);
@@ -51,14 +53,14 @@ onMounted(fetchProfile);
 
         <!-- Stats -->
         <div class="mt-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Stats</h3>
+          <h3 class="text-lg font-semibold text-center text-gray-900 mb-4">Status</h3>
           <div class="space-y-4">
             <div class="bg-gray-100 rounded-lg p-4 text-center">
-              <h4 class="text-xl font-bold text-gray-800">0</h4>
+              <h4 class="text-xl font-bold text-gray-800">5</h4>
               <p class="text-sm text-gray-500">Days of Streak</p>
             </div>
             <div class="bg-gray-100 rounded-lg p-4 text-center">
-              <h4 class="text-xl font-bold text-gray-800">0</h4>
+              <h4 class="text-xl font-bold text-gray-800">{{ profile?.registeredEvents?.length }}</h4>
               <p class="text-sm text-gray-500">Registered Events</p>
             </div>
             <div class="bg-gray-100 rounded-lg p-4 text-center">

@@ -8,8 +8,8 @@ const isAdmin = (req, res, next) => {
 
     next();
   } catch (error) {
-    res.json({
-      error: error.message,
+    res.status(401).json({
+      message: error.message,
     });
   }
 };

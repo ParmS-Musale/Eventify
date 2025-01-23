@@ -21,6 +21,7 @@ const handleSignup = async () => {
         lastName: lastName.value,
         emailId: email.value,
         password: password.value,
+        withCredentials: true,
       }),
     });
 

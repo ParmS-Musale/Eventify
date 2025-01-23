@@ -1,16 +1,44 @@
 <script setup>
+// import { ref } from "vue";
 import { ref } from "vue";
+// import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
+import { useToast } from "vue-toastification"; // Import toast
 
-const title = ref("");
-const description = ref("");
-const category = ref("Tech");
-const location = ref("");
-const startDate = ref("");
-const endDate = ref("");
-const price = ref(0);
-const freeTicket = ref(false);
-const link = ref("");
+const toast = useToast(); // Initialize toast
+
+const event = ref({
+  name: "",
+  description: "",
+  date: "1/2/2025",
+  category: "",
+  location: "",
+  price: 0,
+  capacity: 0,
+  photoUrl: "",
+});
+
+
+const createEvent = async () => {
+  console.log(event.value.date);
+  try {
+    await axios.post(`http://localhost:5000/events/create`, event.value, {
+      withCredentials: true,
+    });
+
+    if(response.data.message)
+    toast.success(response.data.message); // Show success toast
+    router.push("/"); // Redirect to events list
+  } catch (error) {
+    // console.error("Failed to update event:", error);
+    toast.error(error?.response?.data?.message); // Show error toast
+  }
+  // console.log(event.value);
+};
+
 </script>
+
+
 
 <template>
   <section class="bg-gray-50 py-12">
@@ -21,7 +49,7 @@ const link = ref("");
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <input
-            v-model="title"
+            v-model="event.name"
             type="text"
             placeholder="Event Title"
             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
@@ -32,7 +60,7 @@ const link = ref("");
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea
-            v-model="description"
+            v-model="event.description"
             placeholder="Event Description"
             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
             rows="4"
@@ -43,7 +71,7 @@ const link = ref("");
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
           <select
-            v-model="category"
+            v-model="event.category"
             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
           >
             <option value="Tech">Tech</option>
@@ -57,19 +85,26 @@ const link = ref("");
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
           <input
-            v-model="location"
+            v-model="event.location"
             type="text"
             placeholder="Event Location"
             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
           />
         </div>
-
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input
+              v-model="event.date"
+              type="datetime-local"
+              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
+            />
+          </div>
         <!-- Date and Time -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
             <input
-              v-model="startDate"
+              v-model="event.date"
               type="datetime-local"
               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
             />
@@ -77,19 +112,19 @@ const link = ref("");
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
             <input
-              v-model="endDate"
+              v-model="event.date"
               type="datetime-local"
               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
             />
-          </div>
-        </div>
+          </div> -->
+        <!-- </div> -->
 
         <!-- Price -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
             <input
-              v-model="price"
+              v-model="event.price"
               type="number"
               min="0"
               placeholder="Event Price"
@@ -97,14 +132,16 @@ const link = ref("");
               :disabled="freeTicket"
             />
           </div>
-          <div class="flex items-center">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
             <input
-              v-model="freeTicket"
-              type="checkbox"
-              id="free-ticket"
-              class="mr-2"
+              v-model="event.capacity"
+              type="number"
+              min="0"
+              placeholder="Capacity"
+              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
+              
             />
-            <label for="free-ticket" class="text-sm text-gray-700">Free Ticket</label>
           </div>
         </div>
 
@@ -112,7 +149,7 @@ const link = ref("");
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Link</label>
           <input
-            v-model="link"
+            v-model="event.link"
             type="url"
             placeholder="Event Link"
             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 focus:outline-none"
@@ -124,6 +161,7 @@ const link = ref("");
           <button
             type="button"
             class="w-full bg-purple-600 text-white text-sm font-medium py-3 rounded-lg hover:bg-purple-700 focus:ring-2 focus:ring-purple-600 focus:outline-none"
+            @click="createEvent"
           >
             Create Event
           </button>

@@ -7,8 +7,9 @@ import { useToast } from "vue-toastification"; // Import toast
 const toast = useToast(); // Initialize toast
 
 const event = ref({
-  title: "",
+  name: "",
   description: "",
+  date: "",
   category: "",
   location: "",
   startDate: "",
@@ -36,16 +37,15 @@ const fetchEvent = async () => {
 // Update event details
 const updateEvent = async () => {
   try {
-    await axios.patch(`http://localhost:5000/events/${eventId}`, event.value, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    await axios.post(`http://localhost:5000/events/${eventId}`, event.value, {
+      withCredentials: true,
     });
-    toast.success("Event updated successfully!"); // Show success toast
+    if(response.data.message)
+    toast.success(response.data.message); // Show success toast
     router.push("/"); // Redirect to events list
   } catch (error) {
-    console.error("Failed to update event:", error);
-    toast.error("Failed to update event details."); // Show error toast
+    // console.error("Failed to update event:", error);
+    toast.error(error?.response?.data?.message); // Show error toast
   }
 };
 

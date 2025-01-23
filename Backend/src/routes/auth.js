@@ -82,7 +82,7 @@ authRouter.post("/logout", async (req, res) => {
     // Clear the JWT token in the cookie
     res
       .cookie("token", "", { expires: new Date(0) }) // Empty token to clear it
-      .json({ message: "Logged out successfully" });
+      .json({ message: "Logged out successfully",success:true });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

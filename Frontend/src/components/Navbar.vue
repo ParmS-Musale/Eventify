@@ -1,11 +1,33 @@
 <script setup>
 import { RouterLink, useRoute } from "vue-router";
+import { getUserFromSession } from "../utils/helper";
+import axios from "axios";
+import router from "../router";
 
 // Get current route
 const route = useRoute();
 
 // Check if a link is active
 const isActiveLink = (path) => route.path === path;
+
+const user = getUserFromSession();
+console.log("user in navbar", user);
+
+const handleLogout =async () => {
+  try {
+    const { data } = await axios.post('http://localhost:5000/logout', {}, { 
+      withCredentials: true 
+    });
+
+    if (data.success) {
+      sessionStorage.removeItem('user');
+      user.value = null;
+      router.push('/login');
+    }
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+};
 </script>
 
 <template>
@@ -51,11 +73,21 @@ const isActiveLink = (path) => route.path === path;
 
         <!-- Login Button -->
         <div>
+          <!-- Conditional rendering based on user authentication state -->
           <RouterLink
+            v-if="!user"
             to="/login"
             class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 font-medium"
           >
             Login
+          </RouterLink>
+          <RouterLink
+            v-else
+            to="/"
+            class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 font-medium"
+            @click="handleLogout"
+          >
+            Logout
           </RouterLink>
         </div>
       </div>

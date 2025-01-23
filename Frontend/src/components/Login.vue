@@ -3,9 +3,10 @@ import { ref } from "vue";
 import { useToast } from "vue-toastification";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { SetUserInSession } from "../utils/helper";
 
-const emailId = ref("");
-const password = ref("");
+const emailId = ref("test@gmail.com");
+const password = ref("Test@123");
 const toast = useToast();
 const router = useRouter();
 
@@ -14,15 +15,20 @@ const handleLogin = async () => {
     const response = await axios.post("http://localhost:5000/login", {
       emailId: emailId.value,
       password: password.value,
+      
+    },{
+      withCredentials: true,
     });
 
     if (response.status === 200) {
       // Show success toast
       toast.success("Logged in successfully!", { timeout: 3000 });
-
+      SetUserInSession(response?.data?.user); // Save user data in session storage
       // Redirect to home page
+      
       setTimeout(() => {
         router.push("/");
+        // location.reload();
       }, 1000); // Add a slight delay to show the toast message
     }
   } catch (error) {

@@ -12,15 +12,15 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173", // Allow requests from your frontend
-    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+    // methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
+    // allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+    credentials:true
   })
 );
 app.options("*", cors()); // Enable preflight requests for all routes
 app.use(cookieParser()); // Parse cookies
 app.use(express.json()); // Add this middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Add this middleware to parse URL-encoded bodies
-
 
 // Routes
 const authRoutes = require("./routes/auth");

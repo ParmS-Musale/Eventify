@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router"; // Import Vue Router
 
 const router = useRouter(); // Initialize the router
 const searchQuery = ref("");
 const selectedCategory = ref("All");
+const currentPage = ref(1);
+const eventsPerPage = 6;
 const categories = ref([
   "All",
   "NextJS",
@@ -19,6 +21,7 @@ const categories = ref([
 const events = ref([]);
 
 // Fetch events from MongoDB backend
+// Fetch events from MongoDB backend
 const fetchEvents = async () => {
   try {
     const response = await axios.get("http://localhost:5000/events", {
@@ -29,12 +32,36 @@ const fetchEvents = async () => {
       },
     });
 
-    console.log("Fetched events:", response.data);
-    events.value = response.data; // Store fetched events in the events array
+    // Filter events based on search query
+    events.value = response.data.filter(
+      (event) =>
+        // Case-insensitive search across multiple fields
+        event.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        event.category
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase()) ||
+        event.description
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase())
+    );
+
+    currentPage.value = 1; // Reset to first page on new search
   } catch (error) {
     console.error("Error fetching events:", error);
   }
 };
+
+// Paginated events
+const paginatedEvents = computed(() => {
+  const start = (currentPage.value - 1) * eventsPerPage;
+  const end = start + eventsPerPage;
+  return events.value.slice(start, end);
+});
+
+// Total pages
+const totalPages = computed(() =>
+  Math.ceil(events.value.length / eventsPerPage)
+);
 
 // Navigate to event details page
 const goToEventDetails = (eventId) => {
@@ -42,6 +69,19 @@ const goToEventDetails = (eventId) => {
     router.push(`/card-description/${eventId}`);
   } else {
     console.error("Event ID is missing!");
+  }
+};
+
+// Pagination methods
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
   }
 };
 
@@ -88,9 +128,9 @@ watch([searchQuery, selectedCategory], fetchEvents);
       </div>
 
       <!-- Event Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div
-          v-for="event in events"
+          v-for="event in paginatedEvents"
           :key="event._id"
           @click="goToEventDetails(event._id)"
           class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
@@ -117,6 +157,26 @@ watch([searchQuery, selectedCategory], fetchEvents);
             <p class="mt-2 text-sm text-gray-700">ParmS-Musale</p>
           </div>
         </div>
+      </div>
+      <!-- Pagination Controls -->
+      <div class="flex justify-center items-center space-x-4">
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 bg-purple-600 text-white rounded-lg disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span class="text-gray-700">
+          Page {{ currentPage }} of {{ totalPages }}
+        </span>
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="px-4 py-2 bg-purple-600 text-white rounded-lg disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   </section>

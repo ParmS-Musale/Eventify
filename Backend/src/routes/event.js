@@ -1,13 +1,22 @@
+const Razorpay = require("razorpay");
 const express = require("express");
 const userAuth = require("../middlewares/auth"); // Corrected import
 const Event = require("../models/event");
 const User = require("../models/user");
 const { validateEventData } = require("../utils/validation");
 const isAdmin = require("../middlewares/isAdmin");
+const event = require("../models/event");
+const Payment = require("../models/payment");
+const { verifyPayment } = require("../controllers/payment");
 const eventRouter = express.Router();
 
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID, // Use environment variables for security
+  key_secret: process.env.RAZORPAY_SECRET,
+});
+
 // Create Event Route
-eventRouter.post("/events/create", userAuth, isAdmin, async (req, res) => {
+eventRouter.post("/events/create", userAuth,  async (req, res) => {
   try {
     // Validate request data
     const validationResult = validateEventData(req.body); // Example validation function
@@ -132,7 +141,7 @@ eventRouter.get("/events/my-events", userAuth, async (req, res) => {
 });
 
 // Edit an Event
-eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
+eventRouter.post("/events/:id", userAuth, isAdmin, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id).populate("createdBy");
 
@@ -171,7 +180,7 @@ eventRouter.patch("/events/:id", userAuth, isAdmin, async (req, res) => {
 });
 
 // Delete an Event
-eventRouter.delete("/events/:id", userAuth, async (req, res) => {
+eventRouter.delete("/events/:id", userAuth,isAdmin, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
 
@@ -196,5 +205,40 @@ eventRouter.delete("/events/:id", userAuth, async (req, res) => {
     res.status(500).json({ message: "Server Error: " + error.message });
   }
 });
+
+// Route to create an order for an event
+eventRouter.post("/create-payment", async (req, res) => {
+  try {
+    const { amount, currency } = req.body;
+
+    if (!amount) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Amount is required." });
+    }
+
+    // Create Razorpay order
+    const options = {
+      amount: amount * 100, // Convert amount to the smallest unit (paise for INR)
+      currency: currency || "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpayInstance.orders.create(options);
+
+      
+    res.json({ success: true, order });
+  } catch (error) {
+    console.error("Error creating Razorpay order:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// eventRouter.post("/verify", userAuth,verifyPayment);
+ 
+
+
+
+
 
 module.exports = eventRouter;

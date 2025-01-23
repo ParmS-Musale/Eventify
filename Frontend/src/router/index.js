@@ -8,6 +8,7 @@ import CardDescription from "../components/CardDescription.vue";
 import CardEdit from "../components/CardEdit.vue";
 import ProfileView from "../components/ProfileView.vue";
 import EditProfile from "../components/EditProfile.vue";
+// import Payment from "../components/Payment.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       name: "ProfileUpdate",
       component: EditProfile,
     },
+    // {
+    //   path: "/payment",
+    //   name: "Payment",
+    //   component: Payment,
+    // },
   ],
 });
 

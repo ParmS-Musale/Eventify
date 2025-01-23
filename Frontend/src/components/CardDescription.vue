@@ -32,8 +32,14 @@ const deleteEvent = async () => {
   if (!confirmDelete) return;
 
   try {
-    await axios.delete(`http://localhost:5000/events/${route.params.id}`);
-    toast.success("Event deleted successfully!"); // Show success toast
+    const response = await axios.delete(
+      `http://localhost:5000/events/${route.params.id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    toast.success(response?.data?.message); // Show success toast
     router.push("/events"); // Redirect to the events list page
   } catch (error) {
     console.error("Error deleting event:", error.response || error);
@@ -41,6 +47,67 @@ const deleteEvent = async () => {
       error.response?.data?.message ||
         "Failed to delete the event. Please try again."
     ); // Show error toast
+  }
+};
+
+// Add a script tag to load Razorpay
+onMounted(() => {
+  const script = document.createElement("script");
+  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.async = true;
+  document.body.appendChild(script);
+});
+
+const initiatePayment = async () => {
+  try {
+    // Call backend to create a Razorpay order
+    const { data } = await axios.post("http://localhost:5000/create-payment", {
+      amount: 500, // Replace with dynamic amount
+      currency: "INR",
+    });
+
+    if (data.success) {
+      const options = {
+        key: "rzp_test_t6ArxAcVBAShgb",
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: "Eventify",
+        description: "Payment for Event Registration",
+        order_id: data.order.id, // Razorpay Order ID
+        handler: function (response) {
+          // Step 2: Handle success and send payment details to the backend for verification
+          axios
+            .post(
+              "http://localhost:5000/events/register/" + event.value._id,
+              {},
+              {
+                withCredentials: true,
+              }
+            )
+            .then((verificationResponse) => {
+              alert("Success! Payment verified and ticket issued");
+            })
+            .catch((err) => {
+              alert("Payment verification failed");
+            });
+        },
+        prefill: {
+          name: "Customer Name", // Pass customer name
+          email: "customer@example.com", // Pass customer email
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      // Use Razorpay global object instead
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } else {
+      toast.alert("Failed to create Razorpay order");
+    }
+  } catch (error) {
+    console.error("Error initiating payment:", error);
   }
 };
 
@@ -115,13 +182,13 @@ onMounted(fetchEventDetails);
 
           <p class="text-gray-600 mb-4">{{ event.description }}</p>
 
-          <a
-            :href="event.link || '#'"
+          <button
             target="_blank"
             class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+            @click="initiatePayment"
           >
             Get Ticket
-          </a>
+          </button>
         </div>
       </div>
     </div>
