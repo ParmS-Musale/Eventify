@@ -10,9 +10,10 @@ const route = useRoute();
 // Check if a link is active
 const isActiveLink = (path) => route.path === path;
 
+// Get user from session
 const user = getUserFromSession();
-console.log("user in navbar", user);
 
+// Handle logout
 const handleLogout = async () => {
   try {
     const { data } = await axios.post(
@@ -50,8 +51,8 @@ const handleLogout = async () => {
           </RouterLink>
         </div>
 
-        <!-- Navigation Links -->
-        <div class="hidden md:flex space-x-6">
+        <!-- Navigation Links (Conditional Rendering) -->
+        <div v-if="user" class="hidden md:flex space-x-6">
           <RouterLink
             to="/"
             class="text-gray-800 hover:text-purple-600 font-medium"
@@ -62,14 +63,14 @@ const handleLogout = async () => {
           <RouterLink
             to="/events"
             class="text-gray-800 hover:text-purple-600 font-medium"
-            :class="{ 'text-purple-600': isActiveLink('/my-events') }"
+            :class="{ 'text-purple-600': isActiveLink('/events') }"
           >
             Events
           </RouterLink>
 
           <!-- Profile link for users, Admin Dashboard for admins -->
           <RouterLink
-            v-if="user && user.role === 'Admin'"
+            v-if="user.role === 'Admin'"
             to="/admin-view"
             class="text-gray-800 hover:text-purple-600 font-medium"
             :class="{ 'text-purple-600': isActiveLink('/admin-view') }"
@@ -77,7 +78,7 @@ const handleLogout = async () => {
             Admin Dashboard
           </RouterLink>
           <RouterLink
-            v-else-if="user"
+            v-else
             to="/profile-view"
             class="text-gray-800 hover:text-purple-600 font-medium"
             :class="{ 'text-purple-600': isActiveLink('/profile-view') }"
@@ -86,7 +87,7 @@ const handleLogout = async () => {
           </RouterLink>
         </div>
 
-        <!-- Login Button -->
+        <!-- Login/Logout Button -->
         <div>
           <!-- Conditional rendering based on user authentication state -->
           <RouterLink
@@ -109,6 +110,3 @@ const handleLogout = async () => {
     </div>
   </nav>
 </template>
-  
-
-  

@@ -21,15 +21,16 @@ const categories = ref([
 const events = ref([]);
 
 // Fetch events from MongoDB backend
-// Fetch events from MongoDB backend
+
 const fetchEvents = async () => {
   try {
     const response = await axios.get("http://localhost:5000/events", {
-      params: {
-        search: searchQuery.value,
-        category:
-          selectedCategory.value === "All" ? "" : selectedCategory.value,
-      },
+      // params: {
+      //   search: searchQuery.value,
+      //   category:
+      //     selectedCategory.value === "All" ? "" : selectedCategory.value,
+      // },
+      withCredentials: true,
     });
 
     // Filter events based on search query

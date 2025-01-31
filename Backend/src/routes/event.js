@@ -57,7 +57,7 @@ eventRouter.post("/events/create", userAuth,  async (req, res) => {
 });
 
 // View Available Events
-eventRouter.get("/events", userAuth ,async (req, res) => {
+eventRouter.get("/events", async (req, res) => {
   try {
     const { search, category } = req.query;
 
