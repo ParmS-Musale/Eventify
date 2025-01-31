@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { BASE_URL } from "../utils/constant";
 
 const adminStats = ref({
   totalUsers: 0,
@@ -12,7 +13,7 @@ const adminStats = ref({
 
 const fetchAdminDashboard = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/admin/dashboard", {
+    const response = await axios.get(BASE_URL+"/admin/dashboard", {
       withCredentials: true,
     });
     adminStats.value = response.data.stats;

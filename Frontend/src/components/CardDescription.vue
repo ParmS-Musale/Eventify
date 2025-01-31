@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useToast } from "vue-toastification"; // Import the toast
+import { BASE_URL } from "../utils/constant";
 
 const route = useRoute();
 const router = useRouter();
@@ -12,7 +13,7 @@ const toast = useToast(); // Initialize toast
 const fetchEventDetails = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/events/${route.params.id}`
+      BASE_URL+`/events/${route.params.id}`
     );
     event.value = response.data;
   } catch (error) {
@@ -33,7 +34,7 @@ const deleteEvent = async () => {
 
   try {
     const response = await axios.delete(
-      `http://localhost:5000/events/${route.params.id}`,
+      BASE_URL+`/events/${route.params.id}`,
       {
         withCredentials: true,
       }
@@ -61,7 +62,7 @@ onMounted(() => {
 const initiatePayment = async () => {
   try {
     // Call backend to create a Razorpay order
-    const { data } = await axios.post("http://localhost:5000/create-payment", {
+    const { data } = await axios.post(BASE_URL+"/create-payment", {
       amount: 500, // Replace with dynamic amount
       currency: "INR",
     });
@@ -78,7 +79,7 @@ const initiatePayment = async () => {
           // Step 2: Handle success and send payment details to the backend for verification
           axios
             .post(
-              "http://localhost:5000/events/register/" + event.value._id,
+              BASE_URL+"/events/register/" + event.value._id,
               {},
               {
                 withCredentials: true,

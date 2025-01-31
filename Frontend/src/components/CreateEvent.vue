@@ -4,6 +4,7 @@ import { ref } from "vue";
 // import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useToast } from "vue-toastification"; // Import toast
+import { BASE_URL } from "../utils/constant";
 
 const toast = useToast(); // Initialize toast
 
@@ -22,7 +23,7 @@ const event = ref({
 const createEvent = async () => {
   console.log(event.value.date);
   try {
-    await axios.post(`http://localhost:5000/events/create`, event.value, {
+    await axios.post(BASE_URL+`/events/create`, event.value, {
       withCredentials: true,
     });
 

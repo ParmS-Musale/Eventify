@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"; // For navigation
 import { useToast } from "vue-toastification"; // For toast notifications
 import axios from "axios";
+import { BASE_URL } from "../utils/constant";
 
 const router = useRouter();
 const toast = useToast();
@@ -32,7 +33,7 @@ const fetchProfile = async () => {
 
 const updateProfile = async () => {
   try {
-    await axios.post("http://localhost:5000/profile/edit", profile.value, {
+    await axios.post(BASE_URL+"/profile/edit", profile.value, {
      
       withCredentials: true,
     });

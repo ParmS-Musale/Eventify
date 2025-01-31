@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useToast } from "vue-toastification"; // Import toast
+import { BASE_URL } from "../utils/constant";
 
 const toast = useToast(); // Initialize toast
 
@@ -37,7 +38,7 @@ const fetchEvent = async () => {
 // Update event details
 const updateEvent = async () => {
   try {
-    await axios.post(`http://localhost:5000/events/${eventId}`, event.value, {
+    await axios.post(BASE_URL +`/events/${eventId}`, event.value, {
       withCredentials: true,
     });
     if(response.data.message)
