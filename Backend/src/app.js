@@ -17,7 +17,7 @@ app.use(
     credentials: true,
   })
 );
-app.options("*", cors()); // Enable preflight requests for all routes
+// app.options("*", cors()); // Enable preflight requests for all routes
 app.use(cookieParser()); // Parse cookies
 app.use(express.json()); // Add this middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Add this middleware to parse URL-encoded bodies
