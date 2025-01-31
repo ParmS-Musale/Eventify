@@ -8,10 +8,17 @@ const firstName = ref("");
 const lastName = ref("");
 const email = ref("");
 const password = ref("");
+const dob = ref("");
+const gender = ref("");
 const toast = useToast();
 const router = useRouter();
 
 const handleSignup = async () => {
+  if (!dob.value || !gender.value  ) {
+    toast.error("Please fill in all the required fields, i.");
+    return;
+  }
+
   try {
     const response = await fetch("http://localhost:5000/signup", {
       method: "POST",
@@ -21,6 +28,8 @@ const handleSignup = async () => {
         lastName: lastName.value,
         emailId: email.value,
         password: password.value,
+        dob: dob.value,
+        gender: gender.value,
         withCredentials: true,
       }),
     });
@@ -37,6 +46,8 @@ const handleSignup = async () => {
     toast.error("An error occurred. Please try again.");
   }
 };
+
+
 </script>
 
 <template>
@@ -47,23 +58,9 @@ const handleSignup = async () => {
         Create your account to continue to Evently
       </p>
 
-      <!-- Social Login -->
-      <div class="flex justify-center gap-4 mb-4">
-        <button class="bg-gray-100 p-3 rounded-full">
-          <i class="fab fa-github text-gray-800"></i>
-        </button>
-        <button class="bg-gray-100 p-3 rounded-full">
-          <i class="fab fa-google text-gray-600"></i>
-        </button>
-      </div>
-      <div class="flex items-center my-4">
-        <div class="border-t border-gray-300 flex-grow"></div>
-        <span class="mx-2 text-sm text-gray-500">or</span>
-        <div class="border-t border-gray-300 flex-grow"></div>
-      </div>
-
       <!-- Signup Form -->
       <form @submit.prevent="handleSignup">
+        <!-- Other fields -->
         <div class="mb-4">
           <input
             v-model="firstName"
@@ -100,6 +97,29 @@ const handleSignup = async () => {
             required
           />
         </div>
+        <div class="mb-4">
+          <input
+            v-model="dob"
+            type="date"
+            placeholder="Date of Birth"
+            class="border w-full p-2 rounded-lg text-gray-700"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <select
+            v-model="gender"
+            class="border w-full p-2 rounded-lg text-gray-700"
+          >
+            <option value="" disabled>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        
+
         <button
           type="submit"
           class="w-full bg-purple-600 text-white p-2 rounded-lg hover:bg-purple-700"

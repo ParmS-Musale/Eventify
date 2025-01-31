@@ -10,7 +10,7 @@ authRouter.post("/signup", async (req, res) => {
   try {
     validateSignupData(req); // Validate the signup data from Request Body
 
-    const { firstName, lastName, emailId, password } = req.body;
+    const { firstName, lastName, emailId, password, dob, gender } = req.body;
 
     // Encrypt The Password
     const hashPassword = await bcrypt.hash(password, 10); // Password Encryption Using Bcrypt
@@ -21,6 +21,8 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password,
+      dob,
+      gender,
     });
 
     // Save the User to the Database
@@ -82,7 +84,7 @@ authRouter.post("/logout", async (req, res) => {
     // Clear the JWT token in the cookie
     res
       .cookie("token", "", { expires: new Date(0) }) // Empty token to clear it
-      .json({ message: "Logged out successfully",success:true });
+      .json({ message: "Logged out successfully", success: true });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

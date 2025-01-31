@@ -4,12 +4,13 @@ const isAdmin = require("../middlewares/isAdmin.js");
 const { vaildateEditProfileData } = require("../utils/validation");
 const profileRouter = express.Router();
 const User = require("../models/user");
+const cors = require("cors");
 
 // Profile view route
 profileRouter.get("/profile/view", userAuth, (req, res) => {
   try {
     const user = req.user;
-    
+
     res.send(user);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
@@ -17,12 +18,13 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
 });
 
 // Profile Edit Route
-profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+profileRouter.post("/profile/edit", userAuth, async (req, res) => {
   try {
-    const validationResult = vaildateEditProfileData(req);
-    if (!validationResult) {
-      return res.status(400).send("Invalid Fields");
-    }
+    console.log(req.body)
+    // const validationResult = vaildateEditProfileData(req);
+    // if (!validationResult) {
+      // return res.status(400).send("Invalid Fields");
+    // }
 
     const loggedInUser = req.user;
 

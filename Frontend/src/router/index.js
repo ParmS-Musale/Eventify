@@ -7,6 +7,7 @@ import CreateEvent from "@/components/CreateEvent.vue";
 import CardDescription from "../components/CardDescription.vue";
 import CardEdit from "../components/CardEdit.vue";
 import ProfileView from "../components/ProfileView.vue";
+import AdminView from "../components/AdminView.vue";
 import EditProfile from "../components/EditProfile.vue";
 // import Payment from "../components/Payment.vue";
 
@@ -54,15 +55,15 @@ const router = createRouter({
       component: ProfileView,
     },
     {
+      path: "/admin-view",
+      name: "AdminView",
+      component: AdminView,
+    },
+    {
       path: "/profile-update",
       name: "ProfileUpdate",
       component: EditProfile,
     },
-    // {
-    //   path: "/payment",
-    //   name: "Payment",
-    //   component: Payment,
-    // },
   ],
 });
 

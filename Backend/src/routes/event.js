@@ -57,7 +57,7 @@ eventRouter.post("/events/create", userAuth,  async (req, res) => {
 });
 
 // View Available Events
-eventRouter.get("/events", async (req, res) => {
+eventRouter.get("/events", userAuth ,async (req, res) => {
   try {
     const { search, category } = req.query;
 
@@ -188,16 +188,7 @@ eventRouter.delete("/events/:id", userAuth,isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // Allow only the creator to delete the event
-    // if (
-    //   !event.registeredUsers ||
-    //   event.registeredUsers.toString() !== req.user._id.toString()
-    // ) {
-    //   return res
-    //     .status(403)
-    //     .json({ message: "You are not authorized to edit this event" });
-    // }
-
+   
     await Event.findByIdAndDelete({ _id: req.params.id });
     res.status(200).json({ message: "Event deleted successfully" });
     await event.save();
@@ -233,12 +224,5 @@ eventRouter.post("/create-payment", async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
-// eventRouter.post("/verify", userAuth,verifyPayment);
- 
-
-
-
-
 
 module.exports = eventRouter;

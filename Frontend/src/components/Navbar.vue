@@ -13,19 +13,23 @@ const isActiveLink = (path) => route.path === path;
 const user = getUserFromSession();
 console.log("user in navbar", user);
 
-const handleLogout =async () => {
+const handleLogout = async () => {
   try {
-    const { data } = await axios.post('http://localhost:5000/logout', {}, { 
-      withCredentials: true 
-    });
+    const { data } = await axios.post(
+      "http://localhost:5000/logout",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
 
     if (data.success) {
-      sessionStorage.removeItem('user');
+      sessionStorage.removeItem("user");
       user.value = null;
-      router.push('/login');
+      router.push("/login");
     }
   } catch (error) {
-    console.error('Logout failed:', error);
+    console.error("Logout failed:", error);
   }
 };
 </script>
@@ -62,10 +66,21 @@ const handleLogout =async () => {
           >
             Events
           </RouterLink>
+
+          <!-- Profile link for users, Admin Dashboard for admins -->
           <RouterLink
+            v-if="user && user.role === 'Admin'"
+            to="/admin-view"
+            class="text-gray-800 hover:text-purple-600 font-medium"
+            :class="{ 'text-purple-600': isActiveLink('/admin-view') }"
+          >
+            Admin Dashboard
+          </RouterLink>
+          <RouterLink
+            v-else-if="user"
             to="/profile-view"
             class="text-gray-800 hover:text-purple-600 font-medium"
-            :class="{ 'text-purple-600': isActiveLink('/my-profile') }"
+            :class="{ 'text-purple-600': isActiveLink('/profile-view') }"
           >
             My Profile
           </RouterLink>

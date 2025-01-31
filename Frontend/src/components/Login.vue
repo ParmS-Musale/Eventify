@@ -5,8 +5,8 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { SetUserInSession } from "../utils/helper";
 
-const emailId = ref("test@gmail.com");
-const password = ref("Test@123");
+const emailId = ref("");
+const password = ref("");
 const toast = useToast();
 const router = useRouter();
 

@@ -26,6 +26,8 @@ const vaildateEditProfileData = (req) => {
     "emailId",
     "password",
     "photoUrl",
+    // "dob", 
+    // "age",
   ];
 
   const isEditAllowed = Object.keys(req.body).every((field) =>

@@ -24,6 +24,14 @@ const userSchema = new mongoose.Schema(
         message: "Invalid email format",
       },
     },
+    dob: {
+      type: Date,
+      // required: true,
+      validate: {
+        validator: (value) => !isNaN(new Date(value).getTime()), // Check if it's a valid date
+        message: "Invalid date of birth format",
+      },
+    },
     age: {
       type: Number,
       min: 0, // Age cannot be negative
@@ -53,7 +61,8 @@ const userSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
-      default: "https://example.com/default-image.png", // Replace with an actual default image URL
+      default:
+        "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_640.png",
     },
     registeredEvents: [
       {

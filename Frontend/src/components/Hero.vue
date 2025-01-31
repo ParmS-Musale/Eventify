@@ -21,7 +21,7 @@ import { RouterLink } from "vue-router";
         </p>
         <div class="mt-8">
           <RouterLink
-            to="/explore"
+            to="/events"
             class="bg-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-purple-700"
           >
             Explore Now

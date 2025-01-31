@@ -21,9 +21,7 @@ const profile = ref({
 const fetchProfile = async () => {
   try {
     const response = await axios.get("http://localhost:5000/profile/view", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      withCredentials: true,
     });
     profile.value = response.data;
   } catch (error) {
@@ -34,11 +32,9 @@ const fetchProfile = async () => {
 
 const updateProfile = async () => {
   try {
-    await axios.patch("http://localhost:5000/profile/edit", profile.value, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+    await axios.post("http://localhost:5000/profile/edit", profile.value, {
+     
+      withCredentials: true,
     });
     toast.success("Profile updated successfully!");
     router.push("/profile-view");
