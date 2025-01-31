@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http:localhost:5173", // Allow requests from your frontend
+    origin: process.env.FRONTED_URL, // Allow requests from your frontend
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
     // allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
     credentials: true,
