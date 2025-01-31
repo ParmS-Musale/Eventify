@@ -2,6 +2,7 @@
 import { ref, onMounted, watch, computed } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router"; // Import Vue Router
+import { BASE_URL } from "../utils/constant";
 
 const router = useRouter(); // Initialize the router
 const searchQuery = ref("");
@@ -24,7 +25,7 @@ const events = ref([]);
 
 const fetchEvents = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/events", {
+    const response = await axios.get(BASE_URL + "/events", {
       // params: {
       //   search: searchQuery.value,
       //   category:

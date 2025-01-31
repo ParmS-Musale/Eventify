@@ -4,6 +4,7 @@ import { useToast } from "vue-toastification";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { SetUserInSession } from "../utils/helper";
+import { BASE_URL } from "../utils/constant";
 
 const emailId = ref("");
 const password = ref("");
@@ -12,7 +13,7 @@ const router = useRouter();
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post("http://localhost:5000/login", {
+    const response = await axios.post(BASE_URL+"login", {
       emailId: emailId.value,
       password: password.value,
       

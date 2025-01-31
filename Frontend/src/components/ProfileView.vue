@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import AdminView from "../components/AdminView.vue";
+import { BASE_URL } from "../utils/constant";
 
 const profile = ref({
   firstName: "",
@@ -15,7 +16,7 @@ const profile = ref({
 
 const fetchProfile = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/profile/view", {
+    const response = await axios.get(BASE_URL+"/profile/view", {
       withCredentials: true,
     });
     profile.value = response.data;

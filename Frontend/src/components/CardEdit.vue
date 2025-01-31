@@ -27,7 +27,7 @@ const eventId = route.params.id; // Assume event ID is passed as a route param
 // Fetch event details on component mount
 const fetchEvent = async () => {
   try {
-    const response = await axios.get(`http://localhost:5000/events/${eventId}`);
+    const response = await axios.get(BASE_URL+`/events/${eventId}`);
     event.value = response.data; // Populate event data
   } catch (error) {
     console.error("Failed to fetch event:", error);

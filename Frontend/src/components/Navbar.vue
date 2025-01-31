@@ -3,6 +3,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { getUserFromSession } from "../utils/helper";
 import axios from "axios";
 import router from "../router";
+import { BASE_URL } from "../utils/constant";
 
 // Get current route
 const route = useRoute();
@@ -17,7 +18,7 @@ const user = getUserFromSession();
 const handleLogout = async () => {
   try {
     const { data } = await axios.post(
-      "http://localhost:5000/logout",
+      BASE_URL+"/logout",
       {},
       {
         withCredentials: true,

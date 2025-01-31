@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import "vue-toastification/dist/index.css";
 import { useToast } from "vue-toastification";
+import { BASE_URL } from "../utils/constant";
 
 const firstName = ref("");
 const lastName = ref("");
@@ -20,7 +21,7 @@ const handleSignup = async () => {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/signup", {
+    const response = await fetch(BASE_URL+ "/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
