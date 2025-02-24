@@ -68,3 +68,5 @@ const router = createRouter({
 });
 
 export default router;
+
+// All Routes
